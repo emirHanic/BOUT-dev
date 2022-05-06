@@ -61,8 +61,8 @@
  *
  * \f{eqnarray}{
  * \nabla_\perp^2 \phi + <\frac{A}{D}>\phi
- * &=& rhs/D - \frac{1}{D\,C1} \nabla_\perp C2\cdot\nabla_\perp \phi - (\frac{A}{D} - <\frac{A}{D}>)*\phi
- * \f}
+ * &=& rhs/D - \frac{1}{D\,C1} \nabla_\perp C2\cdot\nabla_\perp \phi - (\frac{A}{D} -
+ *<\frac{A}{D}>)*\phi \f}
  *
  * The iteration can be under-relaxed to help it converge. Amount of under-relaxation is
  * set by the parameter 'underrelax_factor'. 0<underrelax_factor<=1, with
@@ -75,29 +75,26 @@
  *      1. Get the vorticity from
  *         \code{.cpp}
  *         vort = (vortD/n) - grad_perp(ln_n)*grad_perp(phiCur)
- *         [Delp2(phiNext) + 1/DC(C2*D)*grad_perp(DC(C2))*grad_perp(phiNext) + DC(A/D)*phiNext
- *          = b(phiCur)
- *          = (rhs/D) - (1/C1/D*grad_perp(C2)*grad_perp(phiCur) - 1/DC(C2*D)*grad_perp(DC(C2))*grad_perp(phiCur)) - (A/D - DC(A/D))*phiCur]
- *         \endcode
- *         where phiCur is phi of the current iteration
- *         [and DC(f) is the constant-in-z component of f]
+ *         [Delp2(phiNext) + 1/DC(C2*D)*grad_perp(DC(C2))*grad_perp(phiNext) +
+ *DC(A/D)*phiNext = b(phiCur) = (rhs/D) - (1/C1/D*grad_perp(C2)*grad_perp(phiCur) -
+ *1/DC(C2*D)*grad_perp(DC(C2))*grad_perp(phiCur)) - (A/D - DC(A/D))*phiCur] \endcode where
+ *phiCur is phi of the current iteration [and DC(f) is the constant-in-z component of f]
  *      2. Invert \f$phi\f$ to find the voricity using
  *         \code{.cpp}
  *         phiNext = invert_laplace_perp(vort)
  *         [set Acoef of laplace_perp solver to DC(A/D)
  *          and C1coef of laplace_perp solver to DC(C1*D)
  *          and C2coef of laplace_perp solver to DC(C2)
- *          then phiNext = invert_laplace_perp(underrelax_factor*b(phiCur) - (1-underrelax_factor)*b(phiPrev))]
- *          where b(phiPrev) is the previous rhs value, which (up to rounding errors) is
- *          the same as the lhs of the direct solver applied to phiCur.
+ *          then phiNext = invert_laplace_perp(underrelax_factor*b(phiCur) -
+ *(1-underrelax_factor)*b(phiPrev))] where b(phiPrev) is the previous rhs value, which (up
+ *to rounding errors) is the same as the lhs of the direct solver applied to phiCur.
  *         \endcode
  *         where phiNext is the newly obtained \f$phi\f$
  *      3. Calculate the error at phi=phiNext
  *         \code{.cpp}
- *         error3D = Delp2(phiNext) + 1/C1*grad_perp(C2)*grad_perp(phiNext) + A/D*phiNext - rhs/D
- *                 = b(phiCur) - b(phiNext)
- *         as b(phiCur) = Delp2(phiNext) + 1/DC(C2*D)*grad_perp(DC(C2))*grad_perp(phiNext) + DC(A/D)*phiNext
- *         up to rounding errors
+ *         error3D = Delp2(phiNext) + 1/C1*grad_perp(C2)*grad_perp(phiNext) + A/D*phiNext
+ *- rhs/D = b(phiCur) - b(phiNext) as b(phiCur) = Delp2(phiNext) +
+ *1/DC(C2*D)*grad_perp(DC(C2))*grad_perp(phiNext) + DC(A/D)*phiNext up to rounding errors
  *         \endcode
  *      4. Calculate the infinity norms of the error
  *         \code{.cpp}
