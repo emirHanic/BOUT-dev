@@ -63,7 +63,7 @@ snapshots. Check the `list of BOUT-next tags <https://hub.docker.com/r/boutproje
 if you want a recent version of BOUT++ “next” (development) branch.
 First download the image::
 
-    $ sudo docker pull boutproject/boutproject/bout-next:9f4c663-petsc
+    $ sudo docker pull boutproject/bout-next:9f4c663-petsc
 
 then run::
 
